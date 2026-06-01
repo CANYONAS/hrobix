@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>BlackStore EU | Orbital Digital Shop</title>
+    <!-- Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0f1e, #03050a);
+            font-family: 'Inter', sans-serif;
+            color: #eef5ff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ---------- ORBITALS: MOVING PLANETS / RINGS ---------- */
+        .orbits-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .orbit-ring {
+            position: absolute;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+            animation: rotateOrbit linear infinite;
+            transform-origin: center center;
+        }
+
+        .orbit-core {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #0ff;
+            border-radius: 50%;
+            filter: blur(2px);
+            box-shadow: 0 0 20px cyan;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .orbital-object {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffd966;
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(255, 220, 100, 0.8);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Different rings */
+        @keyframes rotateOrbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Particle dots floating */
+        .star-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.1; transform: scale(1);}
+            100% { opacity: 0.8; transform: scale(1.2);}
+        }
+
+        /* main content layer */
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* header styles */
+        .store-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(8px);
+            background: rgba(5, 10, 25, 0.6);
+            border-radius: 2rem;
+            padding: 1.8rem 1rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .store-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #2dd4bf);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .store-header .badge {
+            display: inline-flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .status {
+            background: #0e2a2e;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #5effbc;
+            border-left: 3px solid #5effbc;
+        }
+
+        .update-info {
+            background: #1a1f2e;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+
+        .discord-warning {
+            background: rgba(88, 101, 242, 0.2);
+            border-left: 4px solid #5865f2;
+            margin: 1rem auto;
+            max-width: 700px;
+            padding: 0.8rem 1.2rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .discord-warning i {
+            font-size: 1.4rem;
+            color: #5865f2;
+        }
+
+        /* product cards grid */
+        .products-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .product-card {
+            background: rgba(12, 18, 32, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            width: 280px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 20px 35px -15px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 25px 40px -12px rgba(0,255,255,0.2);
+        }
+
+        .product-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #f0f9ff, #a5f3fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .popular-tag {
+            background: #f97316;
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            color: #0a0c15;
+        }
+
+        .price {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin: 0.7rem 0;
+            color: #ffd966;
+        }
+
+        .price small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #b9c7d9;
+        }
+
+        .stock {
+            background: #11161f;
+            padding: 0.3rem;
+            border-radius: 30px;
+            font-family: monospace;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            color: #9cc9ff;
+        }
+
+        .stock span {
+            color: #5effbc;
+            font-weight: 800;
+        }
+
+        .buy-btn {
+            display: inline-block;
+            background: linear-gradient(95deg, #1e2a3e, #0f172a);
+            border: 1px solid #2dd4bf;
+            color: #ccf4ff;
+            font-weight: bold;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0.5rem 0;
+            width: 80%;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .buy-btn:hover {
+            background: #2dd4bf20;
+            border-color: #2dd4bf;
+            color: white;
+            box-shadow: 0 0 12px #2dd4bf80;
+            transform: scale(0.98);
+        }
+
+        .payment-methods {
+            margin-top: 1.2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.4rem;
+            border-radius: 60px;
+            flex-wrap: wrap;
+        }
+
+        .payment-methods i {
+            margin-right: 4px;
+            font-size: 0.9rem;
+        }
+
+        .payment-methods span {
+            background: #151e2c;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 700px) {
+            .store-header h1 { font-size: 2.4rem; }
+            .products-grid { gap: 1.2rem; }
+            .product-card { width: 260px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- MOVING ORBITS BACKGROUND -->
+<div class="orbits-container" id="orbitsContainer"></div>
+<div class="star-particles" id="starField"></div>
+
+<main class="content">
+    <div class="store-header">
+        <h1><i class="fas fa-store"></i> BlackStore EU</h1>
+        <div class="badge">
+            <div class="status"><i class="fas fa-check-circle"></i> Parduotuvė aktyvi</div>
+            <div class="update-info"><i class="far fa-calendar-alt"></i> Paskutinis atnaujinimas: 2026-05-23 21:00</div>
+        </div>
+        <div class="discord-warning">
+            <i class="fab fa-discord"></i>
+            <span>⚠️ Jeigu kilo kokių nors problemų, susisiekite su mumis per Discord.<br> ⚠️ Jeigu kas nors yra Out of Stock ko ieškote — iškelkite tiketą Discord serviryje!</span>
+        </div>
+    </div>
+
+    <div class="products-grid" id="productsContainer">
+        <!-- Products will be injected dynamically, but also we embed static data from image -->
+    </div>
+
+    <footer>
+        <p>✨ Skaitmeniniai produktai geriausomis kainomis — greita ir patikima ✨<br>
+        <i class="fab fa-discord"></i> Prisijunkite prie mūsų Discord serverio</p>
+    </footer>
+</main>
+
+<script>
+    // ------------------------------
+    // PRODUCT DATA (exactly as shown, with Discord links on "Pirkti")
+    // ------------------------------
+    const products = [
+        {
+            name: "Steam Account",
+            tag: "POPULIARIU",
+            price: "0.01",
+            stock: 100,
+            discordInvite: "https://discord.gg/blackstore-eu",     // replace with your actual discord invite link
+            paymentIcons: ["fab fa-paypal", "fab fa-bitcoin", "fas fa-coins"] // LTC, BTC representation
+        },
+        {
+            name: "FiveM Ready",
+            tag: "POPULIARIU",
+            price: "0.07",
+            stock: 100,
+            discordInvite: "https://discord.gg/blackstore-eu",
+            paymentIcons: ["fab fa-paypal", "fab fa-bitcoin", "fas fa-coins"]
+        },
+        {
+            name: "Netflix Account",
+            tag: "POPULIARIU",
+            price: "0.50",
+            stock: 50,
+            discordInvite: "https://discord.gg/blackstore-eu",
+            paymentIcons: ["fab fa-paypal", "fab fa-bitcoin", "fas fa-coins"]
+        }
+    ];
+
+    // Helper to map payment method texts (based on original: PayPal, LTC, BTC)
+    function getPaymentMethodsHtml() {
+        // We'll show three methods with custom labels
+        return `<span><i class="fab fa-paypal"></i> PayPal</span>
+                <span><i class="fab fa-bitcoin"></i> BTC</span>
+                <span><i class="fas fa-coins"></i> LTC</span>`;
+    }
+
+    // render product cards
+    function renderProducts() {
+        const container = document.getElementById('productsContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        products.forEach(prod => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            // Build inner HTML
+            card.innerHTML = `
+                <div class="product-title">${prod.name}</div>
+                <div class="popular-tag"><i class="fas fa-fire"></i> ${prod.tag}</div>
+                <div class="price">€${prod.price} <small>EUR</small></div>
+                <div class="stock"><i class="fas fa-boxes"></i> Stock: <span>${prod.stock}</span></div>
+                <button class="buy-btn" data-discord="${prod.discordInvite}" data-product="${prod.name}">
+                    <i class="fas fa-shopping-cart"></i> Pirkti
+                </button>
+                <div class="payment-methods">
+                    ${getPaymentMethodsHtml()}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // Attach event listeners to all buy buttons (redirect to discord)
+        const allBuyBtns = document.querySelectorAll('.buy-btn');
+        allBuyBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const discordUrl = btn.getAttribute('data-discord');
+                const productName = btn.getAttribute('data-product');
+                if (discordUrl) {
+                    // optional: small console log or custom event
+                    console.log(`Redirecting to Discord for purchase: ${productName}`);
+                    window.open(discordUrl, '_blank');
+                } else {
+                    // fallback default discord invite - but we have set above
+                    window.open('https://discord.gg/blackstore-eu', '_blank');
+                }
+            });
+        });
+    }
+
+    // ----------------------------------------------
+    // DYNAMIC ORBITS: moving rings and glowing objects
+    // ----------------------------------------------
+    function initOrbits() {
+        const container = document.getElementById('orbitsContainer');
+        if (!container) return;
+
+        // Clear any existing
+        container.innerHTML = '';
+
+        // We'll create multiple orbital rings with different sizes and speeds
+        const ringsConfig = [
+            { size: 280, speed: 12, borderWidth: 1, color: 'rgba(0,200,255,0.2)' },
+            { size: 450, speed: 20, borderWidth: 1.5, color: 'rgba(0,255,200,0.15)' },
+            { size: 650, speed: 35, borderWidth: 1, color: 'rgba(100,100,255,0.12)' },
+            { size: 820, speed: 50, borderWidth: 1.2, color: 'rgba(0,180,220,0.2)' },
+            { size: 1100, speed: 70, borderWidth: 1, color: 'rgba(80,200,255,0.08)' }
+        ];
+
+        // Central glow effect (cosmic core)
+        const centralGlow = document.createElement('div');
+        centralGlow.className = 'orbit-core';
+        container.appendChild(centralGlow);
+
+        // we will also add floating small planets for each ring
+        ringsConfig.forEach((cfg, idx) => {
+            const ring = document.createElement('div');
+            ring.className = 'orbit-ring';
+            const size = cfg.size;
+            ring.style.width = `${size}px`;
+            ring.style.height = `${size}px`;
+            ring.style.position = 'absolute';
+            ring.style.top = '50%';
+            ring.style.left = '50%';
+            ring.style.marginTop = `-${size/2}px`;
+            ring.style.marginLeft = `-${size/2}px`;
+            ring.style.border = `${cfg.borderWidth}px solid ${cfg.color}`;
+            ring.style.animationDuration = `${cfg.speed}s`;
+            ring.style.animationTimingFunction = 'linear';
+            ring.style.animationIterationCount = 'infinite';
+            
+            // optional: add little object that orbits on this ring (planet)
+            const orbObject = document.createElement('div');
+            orbObject.className = 'orbital-object';
+            // random size variation
+            const objSize = 4 + Math.random() * 6;
+            orbObject.style.width = `${objSize}px`;
+            orbObject.style.height = `${objSize}px`;
+            orbObject.style.background = `hsl(${40 + idx * 30}, 90%, 65%)`;
+            orbObject.style.boxShadow = `0 0 12px hsl(${40 + idx * 30}, 90%, 70%)`;
+            orbObject.style.position = 'absolute';
+            orbObject.style.top = `-${objSize/2}px`;
+            orbObject.style.left = `calc(50% - ${objSize/2}px)`;
+            
+            ring.appendChild(orbObject);
+            container.appendChild(ring);
+        });
+
+        // additional fast tiny orbiting dots (extra dynamic)
+        for (let i = 0; i < 12; i++) {
+            const miniRing = document.createElement('div');
+            const miniSize = 180 + Math.random() * 400;
+            miniRing.style.position = 'absolute';
+            miniRing.style.width = `${miniSize}px`;
+            miniRing.style.height = `${miniSize}px`;
+            miniRing.style.border = `0.5px solid rgba(0, 255, 200, 0.1)`;
+            miniRing.style.borderRadius = '50%';
+            miniRing.style.top = '50%';
+            miniRing.style.left = '50%';
+            miniRing.style.marginTop = `-${miniSize/2}px`;
+            miniRing.style.marginLeft = `-${miniSize/2}px`;
+            miniRing.style.animation = `rotateOrbit ${15 + Math.random() * 25}s linear infinite`;
+            const dot = document.createElement('div');
+            dot.style.position = 'absolute';
+            dot.style.width = '3px';
+            dot.style.height = '3px';
+            dot.style.background = '#5effbc';
+            dot.style.borderRadius = '50%';
+            dot.style.top = '-1.5px';
+            dot.style.left = 'calc(50% - 1.5px)';
+            dot.style.boxShadow = '0 0 6px cyan';
+            miniRing.appendChild(dot);
+            container.appendChild(miniRing);
+        }
+    }
+
+    // create twinkling stars background
+    function initStarfield() {
+        const starContainer = document.getElementById('starField');
+        if (!starContainer) return;
+        starContainer.innerHTML = '';
+        const starCount = 150;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = 1 + Math.random() * 3;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 5}s`;
+            star.style.animationDuration = `${2 + Math.random() * 4}s`;
+            star.style.opacity = 0.3 + Math.random() * 0.6;
+            starContainer.appendChild(star);
+        }
+    }
+
+    // Additional interactive galaxy effect: move mouse subtle parallax for orbits? (optional)
+    // But we implement something subtle: the orbits container rotates slightly on mouse move?
+    // not necessary but cool. I'll add very gentle tilt to background container
+    document.addEventListener('mousemove', (e) => {
+        const orbits = document.querySelector('.orbits-container');
+        if (!orbits) return;
+        const mouseX = (e.clientX / window.innerWidth) - 0.5;
+        const mouseY = (e.clientY / window.innerHeight) - 0.5;
+        // very subtle shift (max 6px)
+        const shiftX = mouseX * 8;
+        const shiftY = mouseY * 6;
+        orbits.style.transform = `translate(${shiftX}px, ${shiftY}px)`;
+    });
+
+    // Also animate the central core pulsation
+    function addPulseToCore() {
+        const core = document.querySelector('.orbit-core');
+        if (core) {
+            setInterval(() => {
+                core.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                setTimeout(() => {
+                    if(core) core.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 400);
+            }, 1800);
+        }
+    }
+
+    // init everything after load
+    window.addEventListener('DOMContentLoaded', () => {
+        renderProducts();
+        initOrbits();
+        initStarfield();
+        addPulseToCore();
+
+        // Regenerate orbits on resize to avoid weird cutoffs (optional)
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                const container = document.getElementById('orbitsContainer');
+                if(container) {
+                    // we keep existing but recompute positions? but orbits absolute based on percentages works fine
+                    // Avoid full rebuild to keep performance, but updating orbits container transform reset might fix
+                }
+            }, 200);
+        });
+    });
+</script>
+</body>
+</html>
